@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% block title %}Manage Cars{% endblock %}
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="fw-bold">Cars</h1>
+    <a href="{{ url_for('admin.car_create') }}" class="btn btn-primary">Add Car</a>
+</div>
+<div class="card border-0 shadow-sm"><div class="table-responsive">
+<table class="table align-middle mb-0"><thead class="table-light"><tr><th>ID</th><th>Car</th><th>Type</th><th>Rate</th><th>Status</th><th>Location</th><th>Actions</th></tr></thead><tbody>
+{% for car in cars %}
+<tr>
+<td>{{ car.id }}</td><td><strong>{{ car.title }}</strong><br><span class="small text-muted">GPS: {{ 'Yes' if car.gps else 'No' }}</span></td><td>{{ car.car_type }}</td><td>{{ car.daily_rate|money }}</td><td><span class="badge status-{{ car.availability_status }}">{{ car.availability_status|title }}</span></td><td>{{ car.location.city if car.location else '-' }}</td>
+<td class="text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.car_edit', car_id=car.id) }}">Edit</a> <form method="post" action="{{ url_for('admin.car_delete', car_id=car.id) }}" class="d-inline" onsubmit="return confirm('Delete this car?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td>
+</tr>
+{% else %}<tr><td colspan="7" class="text-center text-muted py-4">No cars.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ customer.name }}{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold">{{ customer.name }}</h1>
+<p class="text-muted">{{ customer.email }} · {{ customer.phone or 'No phone' }}</p>
+<div class="card border-0 shadow-sm"><div class="card-body"><h5 class="fw-bold">Rental History</h5>
+<div class="table-responsive"><table class="table"><thead><tr><th>ID</th><th>Car</th><th>Period</th><th>Status</th><th>Total</th></tr></thead><tbody>
+{% for rental in customer.rentals %}<tr><td>#{{ rental.id }}</td><td>{{ rental.car.title }}</td><td>{{ rental.start_date|date }} → {{ rental.end_date|date }}</td><td><span class="badge status-{{ rental.status }}">{{ rental.status|title }}</span></td><td>{{ rental.total_amount|money }}</td></tr>{% else %}<tr><td colspan="5" class="text-muted">No rentals.</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+{% endblock %}

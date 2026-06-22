@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if discount else 'Create' }} Discount{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">{{ 'Edit' if discount else 'Create' }} Discount</h1>
+<div class="card border-0 shadow-sm"><div class="card-body p-4"><form method="post" class="row g-3">
+<div class="col-md-6"><label class="form-label">Code</label><input name="code" class="form-control" value="{{ discount.code if discount else '' }}" required></div>
+<div class="col-md-6"><label class="form-label">Type</label><select name="discount_type" class="form-select">{% for t in types %}<option value="{{ t }}" {% if discount and discount.discount_type == t %}selected{% endif %}>{{ t|title }}</option>{% endfor %}</select></div>
+<div class="col-md-6"><label class="form-label">Value</label><input type="number" step="0.01" name="value" class="form-control" value="{{ discount.value if discount else '' }}" required></div>
+<div class="col-md-6"><label class="form-label">Expiry Date</label><input type="date" name="expiry_date" class="form-control" value="{{ discount.expiry_date|date if discount else '' }}" required></div>
+<div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" name="is_active" id="active" {% if not discount or discount.is_active %}checked{% endif %}><label class="form-check-label" for="active">Active</label></div></div>
+<div class="col-12"><button class="btn btn-primary">Save</button> <a class="btn btn-outline-secondary" href="{{ url_for('admin.discounts') }}">Cancel</a></div>
+</form></div></div>
+{% endblock %}

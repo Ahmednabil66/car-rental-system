@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% macro sidebar_link(endpoint, label, prefix=None) -%}
+    {% set is_active = (request.endpoint == endpoint) or (prefix and request.endpoint and request.endpoint.startswith(prefix)) %}
+    <a href="{{ url_for(endpoint) }}" class="{% if is_active %}active{% endif %}">{{ label }}</a>
+{%- endmacro %}
+{% block content %}
+<div class="admin-shell px-3 px-lg-4 py-4">
+    <aside class="admin-sidebar shadow-sm">
+        <div class="admin-sidebar-title">
+            <span>Admin Panel</span>
+            <small>Management</small>
+        </div>
+        {{ sidebar_link('admin.dashboard', 'Dashboard') }}
+        {{ sidebar_link('admin.cars', 'Cars', 'admin.car') }}
+        {{ sidebar_link('admin.customers', 'Customers', 'admin.customer') }}
+        {{ sidebar_link('admin.rentals', 'Rentals', 'admin.rental') }}
+        {{ sidebar_link('admin.payments', 'Payments', 'admin.payment') }}
+        {{ sidebar_link('admin.discounts', 'Discounts', 'admin.discount') }}
+        {{ sidebar_link('admin.insurances', 'Insurance', 'admin.insurance') }}
+        {{ sidebar_link('admin.maintenance', 'Maintenance', 'admin.maintenance') }}
+        {{ sidebar_link('admin.feedbacks', 'Feedback', 'admin.feedback') }}
+        {{ sidebar_link('reports.index', 'Reports', 'reports.') }}
+    </aside>
+    <section class="admin-content">
+        {% block admin_content %}{% endblock %}
+    </section>
+</div>
+{% endblock %}

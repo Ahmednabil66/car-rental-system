@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Car Rental System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('cars.home') }}">DriveNow</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('cars.list_cars') }}">Cars</a></li>
+                {% if current_user.is_authenticated and current_user.is_customer %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('rentals.dashboard') }}">My Dashboard</a></li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin Panel</a></li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item"><span class="navbar-text me-3">{{ current_user.name }}</span></li>
+                    <li class="nav-item"><a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-dark text-light py-4 mt-5">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+        <div>
+            <strong>Car Rental System</strong><br>
+            <span class="text-secondary">A monolithic MVC Flask application.</span>
+        </div>
+        <div class="text-secondary">Secure bookings, simulated payments, admin reports.</div>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

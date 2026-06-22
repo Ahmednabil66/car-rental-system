@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if insurance else 'Create' }} Insurance{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">{{ 'Edit' if insurance else 'Create' }} Insurance</h1>
+<div class="card border-0 shadow-sm"><div class="card-body p-4"><form method="post" class="row g-3">
+<div class="col-md-6"><label class="form-label">Name</label><input name="name" class="form-control" value="{{ insurance.name if insurance else '' }}" required></div>
+<div class="col-md-6"><label class="form-label">Cost Per Day</label><input type="number" step="0.01" name="cost_per_day" class="form-control" value="{{ insurance.cost_per_day if insurance else '' }}" required></div>
+<div class="col-md-6"><label class="form-label">Car Scope</label><select name="car_id" class="form-select"><option value="">All cars</option>{% for car in cars %}<option value="{{ car.id }}" {% if insurance and insurance.car_id == car.id %}selected{% endif %}>{{ car.title }}</option>{% endfor %}</select></div>
+<div class="col-md-6 d-flex align-items-end"><div class="form-check"><input class="form-check-input" type="checkbox" name="is_active" id="active" {% if not insurance or insurance.is_active %}checked{% endif %}><label class="form-check-label" for="active">Active</label></div></div>
+<div class="col-12"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="4">{{ insurance.description if insurance else '' }}</textarea></div>
+<div class="col-12"><button class="btn btn-primary">Save</button> <a class="btn btn-outline-secondary" href="{{ url_for('admin.insurances') }}">Cancel</a></div>
+</form></div></div>
+{% endblock %}

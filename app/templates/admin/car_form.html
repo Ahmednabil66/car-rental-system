@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if car else 'Create' }} Car{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">{{ 'Edit' if car else 'Create' }} Car</h1>
+<div class="card border-0 shadow-sm"><div class="card-body p-4">
+<form method="post" class="row g-3">
+    <div class="col-md-6"><label class="form-label">Brand</label><input name="brand" class="form-control" value="{{ car.brand if car else '' }}" required></div>
+    <div class="col-md-6"><label class="form-label">Model</label><input name="model" class="form-control" value="{{ car.model if car else '' }}" required></div>
+    <div class="col-md-4"><label class="form-label">Type</label><select name="car_type" class="form-select">{% for t in car_types %}<option value="{{ t }}" {% if car and car.car_type == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select></div>
+    <div class="col-md-4"><label class="form-label">Daily Rate</label><input type="number" step="0.01" name="daily_rate" class="form-control" value="{{ car.daily_rate if car else '' }}" required></div>
+    <div class="col-md-4"><label class="form-label">Status</label><select name="availability_status" class="form-select">{% for s in statuses %}<option value="{{ s }}" {% if car and car.availability_status == s %}selected{% endif %}>{{ s|title }}</option>{% endfor %}</select></div>
+    <div class="col-md-6"><label class="form-label">Location</label><select name="location_id" class="form-select"><option value="">No location</option>{% for loc in locations %}<option value="{{ loc.id }}" {% if car and car.location_id == loc.id %}selected{% endif %}>{{ loc.display_name }}</option>{% endfor %}</select></div>
+    <div class="col-md-6"><label class="form-label">Discount</label><select name="discount_id" class="form-select"><option value="">No default discount</option>{% for d in discounts %}<option value="{{ d.id }}" {% if car and car.discount_id == d.id %}selected{% endif %}>{{ d.code }}</option>{% endfor %}</select></div>
+    <div class="col-12"><label class="form-label">Image URL or static path</label><input name="image_url" class="form-control" value="{{ car.image_url if car else '' }}" placeholder="https://... or /static/images/car.jpg"></div>
+    <div class="col-12"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="4">{{ car.description if car else '' }}</textarea></div>
+    <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" name="gps" id="gps" {% if car and car.gps %}checked{% endif %}><label class="form-check-label" for="gps">GPS enabled</label></div></div>
+    <div class="col-12"><button class="btn btn-primary">Save</button> <a href="{{ url_for('admin.cars') }}" class="btn btn-outline-secondary">Cancel</a></div>
+</form>
+</div></div>
+{% endblock %}

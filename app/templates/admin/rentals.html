@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+{% block title %}Manage Rentals{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">Rentals</h1>
+<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0">
+<thead class="table-light"><tr><th>ID</th><th>Customer</th><th>Car</th><th>Period</th><th>Status</th><th>Payment</th><th>Total</th><th>Change</th></tr></thead>
+<tbody>{% for rental in rentals %}<tr>
+<td>#{{ rental.id }}</td><td>{{ rental.customer.name }}</td><td>{{ rental.car.title }}</td><td>{{ rental.start_date|date }} → {{ rental.end_date|date }}</td><td><span class="badge status-{{ rental.status }}">{{ rental.status|title }}</span></td><td>{% if rental.payment %}<span class="badge status-{{ rental.payment.status }}">{{ rental.payment.status|title }}</span>{% else %}<span class="badge bg-secondary">No payment</span>{% endif %}</td><td>{{ rental.total_amount|money }}</td>
+<td><form method="post" action="{{ url_for('admin.rental_status', rental_id=rental.id) }}" class="d-flex gap-2"><select name="status" class="form-select form-select-sm">{% for s in statuses %}<option value="{{ s }}" {% if rental.status == s %}selected{% endif %}>{{ s|title }}</option>{% endfor %}</select><button class="btn btn-sm btn-primary">Save</button></form></td>
+</tr>{% else %}<tr><td colspan="8" class="text-center text-muted py-4">No rentals.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

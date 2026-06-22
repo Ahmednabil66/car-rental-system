@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+{% block title %}Manage Payments{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">Payments</h1>
+<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0">
+<thead class="table-light"><tr><th>ID</th><th>Rental</th><th>Customer</th><th>Method</th><th>Amount</th><th>Status</th><th>Verified By</th><th>Change</th></tr></thead>
+<tbody>{% for payment in payments %}<tr>
+<td>#{{ payment.id }}</td><td>#{{ payment.rental_id }}</td><td>{{ payment.customer.name }}</td><td>{{ payment.method|title }}</td><td>{{ payment.amount|money }}</td><td><span class="badge status-{{ payment.status }}">{{ payment.status|title }}</span></td><td>{{ payment.verified_by.name if payment.verified_by else '-' }}</td>
+<td><form method="post" action="{{ url_for('admin.payment_status', payment_id=payment.id) }}" class="d-flex gap-2"><select name="status" class="form-select form-select-sm">{% for s in statuses %}<option value="{{ s }}" {% if payment.status == s %}selected{% endif %}>{{ s|title }}</option>{% endfor %}</select><button class="btn btn-sm btn-primary">Save</button></form></td>
+</tr>{% else %}<tr><td colspan="8" class="text-center text-muted py-4">No payments.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

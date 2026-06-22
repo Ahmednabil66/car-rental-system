@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Add Feedback{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="fw-bold">Feedback for {{ rental.car.title }}</h1>
+                    <p class="text-muted">One feedback entry is allowed for each completed rental.</p>
+                    <form method="post" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Rating</label>
+                            <select name="rating" class="form-select" required>
+                                {% for n in [5,4,3,2,1] %}<option value="{{ n }}">{{ n }} / 5</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Comments</label>
+                            <textarea name="comments" class="form-control" rows="5" placeholder="Write your review..."></textarea>
+                        </div>
+                        <div class="col-12"><button class="btn btn-primary">Submit Feedback</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

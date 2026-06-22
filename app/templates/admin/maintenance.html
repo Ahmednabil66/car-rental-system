@@ -1,0 +1,8 @@
+{% extends "admin/base.html" %}
+{% block title %}Maintenance{% endblock %}
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="fw-bold mb-1">Maintenance</h1><p class="text-muted mb-0">Cars with active maintenance are automatically blocked from booking.</p></div><a class="btn btn-primary" href="{{ url_for('admin.maintenance_create') }}">Add Record</a></div>
+<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="table-light"><tr><th>Car</th><th>Service</th><th>Date</th><th>Cost</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead><tbody>
+{% for item in items %}<tr><td>{{ item.car.title }}</td><td>{{ item.service_type }}</td><td>{{ item.service_date|date }}</td><td>{{ item.cost|money }}</td><td><span class="badge status-{{ item.status }}">{{ item.status|title }}</span></td><td>{{ item.notes or '-' }}</td><td class="text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.maintenance_edit', item_id=item.id) }}">Edit</a> <form method="post" action="{{ url_for('admin.maintenance_delete', item_id=item.id) }}" class="d-inline" onsubmit="return confirm('Delete this maintenance record?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td></tr>{% else %}<tr><td colspan="7" class="text-center text-muted py-4">No maintenance records.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Book {{ car.title }}{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <img src="{{ car.image_url or 'https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=1200&auto=format&fit=crop' }}" class="card-img-top" alt="{{ car.title }}">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ car.title }}</h3>
+                    <p class="text-muted">{{ car.description }}</p>
+                    <p class="mb-1"><strong>Rate:</strong> {{ car.daily_rate|money }}/day</p>
+                    <p class="mb-1"><strong>Status:</strong> <span class="badge status-{{ car.availability_status }}">{{ car.availability_status|title }}</span></p>
+                    <p class="mb-0"><strong>Location:</strong> {{ car.location.display_name if car.location else '-' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold mb-3">Rental Booking</h2>
+                    <form method="post" class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Start Date</label><input type="date" name="start_date" class="form-control" value="{{ request.form.get('start_date','') }}" required></div>
+                        <div class="col-md-6"><label class="form-label">End Date</label><input type="date" name="end_date" class="form-control" value="{{ request.form.get('end_date','') }}" required></div>
+                        <div class="col-md-6">
+                            <label class="form-label">Insurance</label>
+                            <select name="insurance_id" class="form-select">
+                                <option value="">No insurance</option>
+                                {% for plan in insurance_options %}<option value="{{ plan.id }}" {% if request.form.get('insurance_id') == plan.id|string %}selected{% endif %}>{{ plan.name }} - {{ plan.cost_per_day|money }}/day</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6"><label class="form-label">Discount Code</label><input name="discount_code" class="form-control" placeholder="Example: SAVE10" value="{{ request.form.get('discount_code','') }}"></div>
+                        <div class="col-12 d-flex gap-2">
+                            <button name="action" value="quote" class="btn btn-outline-primary">Calculate Quote</button>
+                            <button name="action" value="book" class="btn btn-primary">Confirm Booking</button>
+                        </div>
+                    </form>
+
+                    {% if quote %}
+                    <div class="quote-box mt-4">
+                        <h5 class="fw-bold">Quote Summary</h5>
+                        <div class="d-flex justify-content-between"><span>Days</span><strong>{{ quote.days }}</strong></div>
+                        <div class="d-flex justify-content-between"><span>Base rental</span><strong>{{ quote.base_total|money }}</strong></div>
+                        <div class="d-flex justify-content-between"><span>Insurance</span><strong>{{ quote.insurance_total|money }}</strong></div>
+                        <div class="d-flex justify-content-between"><span>Discount</span><strong>-{{ quote.discount_amount|money }}</strong></div>
+                        <hr>
+                        <div class="d-flex justify-content-between fs-5"><span>Total</span><strong>{{ quote.total|money }}</strong></div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

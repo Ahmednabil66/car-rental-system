@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <p class="text-uppercase text-primary small fw-bold mb-1">Customer Area</p>
+            <h1 class="fw-bold mb-1">My Rentals</h1>
+            <p class="text-muted mb-0">Track bookings, payment status, cancellations, and feedback.</p>
+        </div>
+        <a href="{{ url_for('cars.list_cars') }}" class="btn btn-primary">Book another car</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3"><div class="metric-card"><span>Total bookings</span><strong>{{ rentals|length }}</strong></div></div>
+        <div class="col-md-3"><div class="metric-card"><span>Pending</span><strong>{{ rentals|selectattr('status', 'equalto', 'pending')|list|length }}</strong></div></div>
+        <div class="col-md-3"><div class="metric-card"><span>Active</span><strong>{{ rentals|selectattr('status', 'equalto', 'active')|list|length }}</strong></div></div>
+        <div class="col-md-3"><div class="metric-card"><span>Completed</span><strong>{{ rentals|selectattr('status', 'equalto', 'completed')|list|length }}</strong></div></div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light"><tr><th>Car</th><th>Dates</th><th>Rental Status</th><th>Payment Status</th><th>Total</th><th>Actions</th></tr></thead>
+                <tbody>
+                {% for rental in rentals %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="{{ rental.car.image_url or 'https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=300&auto=format&fit=crop' }}" class="rounded" style="width:72px;height:54px;object-fit:cover" alt="{{ rental.car.title }}">
+                                <div><strong>{{ rental.car.title }}</strong><br><span class="text-muted small">{{ rental.car.car_type }} · {{ rental.car.location.city if rental.car.location else 'No location' }}</span></div>
+                            </div>
+                        </td>
+                        <td>{{ rental.start_date|date }} → {{ rental.end_date|date }}<br><span class="text-muted small">{{ rental.days }} day(s)</span></td>
+                        <td><span class="badge status-{{ rental.status }}">{{ rental.status|title }}</span></td>
+                        <td>
+                            {% if rental.payment %}
+                                <span class="badge status-{{ rental.payment.status }}">{{ rental.payment.status|title }}</span><br><span class="small text-muted">{{ rental.payment.method|title }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">No payment</span>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ rental.total_amount|money }}</strong></td>
+                        <td class="text-nowrap">
+                            <a href="{{ url_for('rentals.details', rental_id=rental.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                            {% if rental.status == 'pending' and (not rental.payment or rental.payment.status != 'completed') %}
+                                <a href="{{ url_for('payments.pay', rental_id=rental.id) }}" class="btn btn-sm btn-success">Pay</a>
+                            {% endif %}
+                            {% if rental.can_be_cancelled_by_customer %}
+                                <form method="post" action="{{ url_for('rentals.cancel', rental_id=rental.id) }}" class="d-inline" onsubmit="return confirm('Cancel this rental?')"><button class="btn btn-sm btn-outline-danger">Cancel</button></form>
+                            {% endif %}
+                            {% if rental.status == 'completed' and not rental.feedback %}
+                                <a href="{{ url_for('feedback.add', rental_id=rental.id) }}" class="btn btn-sm btn-warning">Feedback</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6" class="text-center py-5 text-muted">No rentals yet. Start by browsing the fleet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

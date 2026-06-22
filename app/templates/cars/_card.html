@@ -1,0 +1,18 @@
+<div class="card car-card h-100 border-0 shadow-sm">
+    <img src="{{ car.image_url or 'https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=1200&auto=format&fit=crop' }}" class="card-img-top" alt="{{ car.title }}">
+    <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h5 class="card-title mb-1">{{ car.title }}</h5>
+                <p class="text-muted small mb-2">{{ car.car_type }}{% if car.location %} · {{ car.location.city }}{% endif %}</p>
+            </div>
+            <span class="badge status-{{ car.availability_status }}">{{ car.availability_status|title }}</span>
+        </div>
+        <p class="card-text text-muted flex-grow-1">{{ car.description[:95] if car.description else 'Comfortable rental car ready for your next trip.' }}{% if car.description and car.description|length > 95 %}...{% endif %}</p>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+            <strong>{{ car.daily_rate|money }}/day</strong>
+            <span class="small text-muted">GPS: {{ 'Yes' if car.gps else 'No' }}</span>
+        </div>
+        <a href="{{ url_for('cars.details', car_id=car.id) }}" class="btn btn-outline-primary mt-3">View Details</a>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+{% macro render_report_content(report) %}
+    {% set r = report.record %}
+    {% set data = report.content %}
+    {% if r.report_type == 'earnings' %}
+        <div class="row g-3">
+            <div class="col-md-4"><div class="report-metric"><span>Completed Revenue</span><strong>{{ data.completed_revenue|default(0)|money }}</strong></div></div>
+            <div class="col-md-4"><div class="report-metric"><span>Pending Revenue</span><strong>{{ data.pending_revenue|default(0)|money }}</strong></div></div>
+            <div class="col-md-4"><div class="report-metric"><span>Completed Payments</span><strong>{{ data.completed_payments|default(0) }}</strong></div></div>
+        </div>
+    {% elif r.report_type == 'top_cars' %}
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead><tr><th>Car</th><th class="text-end">Rental Count</th></tr></thead>
+                <tbody>
+                {% for row in data.top_rented_cars|default([]) %}
+                    <tr><td>{{ row.car }}</td><td class="text-end fw-semibold">{{ row.rentals }}</td></tr>
+                {% else %}
+                    <tr><td colspan="2" class="text-muted text-center py-3">No rental data yet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% elif r.report_type == 'payments' %}
+        <div class="row g-3">
+            {% for status in ['completed', 'pending', 'refused'] %}
+                <div class="col-md-4">
+                    <div class="report-metric">
+                        <span><span class="badge status-{{ status }} me-1">{{ status|title }}</span> Payments</span>
+                        <strong>{{ data.payments_by_status[status]|default(0) }}</strong>
+                        <small>{{ data.amounts_by_status[status]|default(0)|money }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% elif r.report_type == 'maintenance' %}
+        <div class="report-metric mb-3"><span>Total Maintenance Cost</span><strong>{{ data.total_maintenance_cost|default(0)|money }}</strong></div>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead><tr><th>Car</th><th>Service</th><th>Date</th><th>Cost</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for row in data.maintenance_records|default([]) %}
+                    <tr><td>{{ row.car }}</td><td>{{ row.service_type }}</td><td>{{ row.date }}</td><td>{{ row.cost|money }}</td><td><span class="badge status-{{ row.status }}">{{ row.status|title }}</span></td></tr>
+                {% else %}
+                    <tr><td colspan="5" class="text-muted text-center py-3">No maintenance records.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% elif r.report_type == 'rentals' %}
+        <div class="row g-3">
+            <div class="col-md-4"><div class="report-metric"><span>Total Rentals</span><strong>{{ data.total_rentals|default(0) }}</strong></div></div>
+            {% for status in ['pending', 'active', 'completed', 'cancelled', 'refused'] %}
+                <div class="col-md-4"><div class="report-metric"><span><span class="badge status-{{ status }} me-1">{{ status|title }}</span></span><strong>{{ data.rentals_by_status[status]|default(0) }}</strong></div></div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-light border mb-0">This report contains saved content, but no custom view has been defined for this type.</div>
+    {% endif %}
+{% endmacro %}

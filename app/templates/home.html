@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Home - Car Rental System{% endblock %}
+{% block content %}
+<section class="hero-section text-white">
+    <div class="container py-5">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-7">
+                <span class="badge bg-primary-subtle text-primary mb-3">Professional student Flask project</span>
+                <h1 class="display-4 fw-bold">Rent the right car with a clean booking flow.</h1>
+                <p class="lead text-white-50 mt-3">Browse cars, choose rental dates, add insurance, apply discounts, and complete a simulated payment.</p>
+                <div class="d-flex gap-2 mt-4">
+                    <a href="{{ url_for('cars.list_cars') }}" class="btn btn-primary btn-lg">Browse Cars</a>
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg">Create Account</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Featured Cars</h2>
+            <p class="text-muted mb-0">Available vehicles from the seeded database.</p>
+        </div>
+        <a href="{{ url_for('cars.list_cars') }}" class="btn btn-outline-primary">View all</a>
+    </div>
+    <div class="row g-4">
+        {% for car in featured_cars %}
+            <div class="col-md-4">
+                {% include "cars/_card.html" %}
+            </div>
+        {% else %}
+            <div class="col-12"><div class="alert alert-info">No available cars yet.</div></div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container py-4">
+    <div class="row g-4 text-center">
+        <div class="col-md-4"><div class="feature-box"><h5>Secure Accounts</h5><p>Passwords are hashed using Werkzeug.</p></div></div>
+        <div class="col-md-4"><div class="feature-box"><h5>Smart Booking</h5><p>Invalid dates and overlapping rentals are blocked.</p></div></div>
+        <div class="col-md-4"><div class="feature-box"><h5>Admin Control</h5><p>Cars, rentals, payments, maintenance, and reports.</p></div></div>
+    </div>
+</section>
+{% endblock %}

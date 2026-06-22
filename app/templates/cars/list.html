@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Browse Cars{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm sticky-lg-top filter-card">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Search Cars</h5>
+                    <form method="get" class="vstack gap-3">
+                        <input name="brand" value="{{ request.args.get('brand','') }}" class="form-control" placeholder="Brand">
+                        <input name="model" value="{{ request.args.get('model','') }}" class="form-control" placeholder="Model">
+                        <select name="type" class="form-select">
+                            <option value="">All types</option>
+                            {% for t in car_types %}<option value="{{ t }}" {% if request.args.get('type') == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+                        </select>
+                        <div class="row g-2">
+                            <div class="col"><input type="number" step="0.01" name="min_price" value="{{ request.args.get('min_price','') }}" class="form-control" placeholder="Min $"></div>
+                            <div class="col"><input type="number" step="0.01" name="max_price" value="{{ request.args.get('max_price','') }}" class="form-control" placeholder="Max $"></div>
+                        </div>
+                        <select name="availability" class="form-select">
+                            <option value="">Any status</option>
+                            {% for s in ['available','rented','maintenance'] %}<option value="{{ s }}" {% if request.args.get('availability') == s %}selected{% endif %}>{{ s|title }}</option>{% endfor %}
+                        </select>
+                        <select name="location_id" class="form-select">
+                            <option value="">All locations</option>
+                            {% for loc in locations %}<option value="{{ loc.id }}" {% if request.args.get('location_id') == loc.id|string %}selected{% endif %}>{{ loc.city }}</option>{% endfor %}
+                        </select>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="gps" value="1" id="gps" {% if request.args.get('gps') == '1' %}checked{% endif %}>
+                            <label class="form-check-label" for="gps">GPS only</label>
+                        </div>
+                        <button class="btn btn-primary">Apply Filters</button>
+                        <a href="{{ url_for('cars.list_cars') }}" class="btn btn-outline-secondary">Reset</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h1 class="fw-bold mb-1">Available Fleet</h1>
+                    <p class="text-muted mb-0">{{ cars|length }} car(s) found.</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                {% for car in cars %}
+                    <div class="col-md-6 col-xl-4">{% include "cars/_card.html" %}</div>
+                {% else %}
+                    <div class="col-12"><div class="alert alert-warning">No cars match these filters.</div></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

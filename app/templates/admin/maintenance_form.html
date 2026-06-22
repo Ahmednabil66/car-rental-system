@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if item else 'Create' }} Maintenance{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">{{ 'Edit' if item else 'Create' }} Maintenance Record</h1>
+<div class="card border-0 shadow-sm"><div class="card-body p-4"><form method="post" class="row g-3">
+<div class="col-md-6"><label class="form-label">Car</label><select name="car_id" class="form-select" required>{% for car in cars %}<option value="{{ car.id }}" {% if item and item.car_id == car.id %}selected{% endif %}>{{ car.title }}</option>{% endfor %}</select></div>
+<div class="col-md-6"><label class="form-label">Service Type</label><input name="service_type" class="form-control" value="{{ item.service_type if item else '' }}" required></div>
+<div class="col-md-4"><label class="form-label">Cost</label><input type="number" step="0.01" name="cost" class="form-control" value="{{ item.cost if item else '' }}" required></div>
+<div class="col-md-4"><label class="form-label">Date</label><input type="date" name="service_date" class="form-control" value="{{ item.service_date|date if item else '' }}" required></div>
+<div class="col-md-4"><label class="form-label">Status</label><select name="status" class="form-select">{% for s in statuses %}<option value="{{ s }}" {% if item and item.status == s %}selected{% endif %}>{{ s|title }}</option>{% endfor %}</select></div>
+<div class="col-12"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="4">{{ item.notes if item else '' }}</textarea></div>
+<div class="col-12"><button class="btn btn-primary">Save</button> <a class="btn btn-outline-secondary" href="{{ url_for('admin.maintenance') }}">Cancel</a></div>
+</form></div></div>
+{% endblock %}

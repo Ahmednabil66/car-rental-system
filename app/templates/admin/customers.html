@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+{% block title %}Customers{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">Customers</h1>
+<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0">
+<thead class="table-light"><tr><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Rentals</th><th></th></tr></thead>
+<tbody>{% for customer in customers %}<tr><td><strong>{{ customer.name }}</strong></td><td>{{ customer.username }}</td><td>{{ customer.email }}</td><td>{{ customer.phone or '-' }}</td><td>{{ customer.rentals|length }}</td><td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.customer_details', user_id=customer.id) }}">View</a></td></tr>{% else %}<tr><td colspan="6" class="text-muted text-center py-4">No customers.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

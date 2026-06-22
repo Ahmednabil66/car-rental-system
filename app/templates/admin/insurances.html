@@ -1,0 +1,8 @@
+{% extends "admin/base.html" %}
+{% block title %}Insurance Plans{% endblock %}
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="fw-bold mb-1">Insurance Plans</h1><p class="text-muted mb-0">Set optional coverage costs for all cars or selected cars.</p></div><a class="btn btn-primary" href="{{ url_for('admin.insurance_create') }}">Add Insurance</a></div>
+<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="table-light"><tr><th>Name</th><th>Cost/Day</th><th>Car Scope</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+{% for i in insurances %}<tr><td><strong>{{ i.name }}</strong><br><span class="text-muted small">{{ i.description }}</span></td><td>{{ i.cost_per_day|money }}</td><td>{{ i.car.title if i.car else 'All cars' }}</td><td>{% if i.is_active %}<span class="badge status-completed">Active</span>{% else %}<span class="badge status-cancelled">Inactive</span>{% endif %}</td><td class="text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.insurance_edit', insurance_id=i.id) }}">Edit</a> <form method="post" action="{{ url_for('admin.insurance_delete', insurance_id=i.id) }}" class="d-inline" onsubmit="return confirm('Delete this insurance plan?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td></tr>{% else %}<tr><td colspan="5" class="text-center text-muted py-4">No insurance plans.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

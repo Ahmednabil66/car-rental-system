@@ -1,0 +1,71 @@
+{% extends "admin/base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block admin_content %}
+<div class="admin-page-header mb-4">
+    <div>
+        <p class="text-uppercase text-primary small fw-bold mb-1">Overview</p>
+        <h1 class="fw-bold mb-1">Admin Dashboard</h1>
+        <p class="text-muted mb-0">Monitor fleet status, rentals, payments, and maintenance costs.</p>
+    </div>
+    <a href="{{ url_for('reports.index') }}" class="btn btn-primary">Generate Report</a>
+</div>
+
+<div class="row g-3 mb-4">
+    {% set cards = [
+        ('Total Cars', summary.total_cars, 'Fleet size'),
+        ('Available Cars', summary.available_cars, 'Ready to book'),
+        ('Rented Cars', summary.rented_cars, 'Currently rented'),
+        ('Customers', summary.total_customers, 'Registered users'),
+        ('Rentals', summary.total_rentals, 'All bookings'),
+        ('Revenue', summary.total_revenue|money, 'Completed payments'),
+        ('Pending Payments', summary.pending_payments, 'Need review'),
+        ('Maintenance Cost', summary.maintenance_cost|money, 'Total service cost')
+    ] %}
+    {% for label, value, hint in cards %}
+        <div class="col-sm-6 col-xl-3"><div class="metric-card h-100"><span>{{ hint }}</span><strong>{{ value }}</strong><div class="text-muted small mt-1">{{ label }}</div></div></div>
+    {% endfor %}
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Recent Rentals</h5>
+                    <a href="{{ url_for('admin.rentals') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Customer</th><th>Car</th><th>Period</th><th>Status</th><th>Total</th></tr></thead>
+                        <tbody>
+                        {% for rental in latest_rentals %}
+                            <tr><td>{{ rental.customer.name }}</td><td>{{ rental.car.title }}</td><td>{{ rental.start_date|date }} → {{ rental.end_date|date }}</td><td><span class="badge status-{{ rental.status }}">{{ rental.status|title }}</span></td><td>{{ rental.total_amount|money }}</td></tr>
+                        {% else %}<tr><td colspan="5" class="text-muted text-center py-4">No rentals.</td></tr>{% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Recent Payments</h5>
+                    <a href="{{ url_for('admin.payments') }}" class="btn btn-sm btn-outline-primary">Verify</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Rental</th><th>Method</th><th>Status</th><th>Amount</th></tr></thead>
+                        <tbody>
+                        {% for payment in latest_payments %}
+                            <tr><td>#{{ payment.rental_id }}</td><td>{{ payment.method|title }}</td><td><span class="badge status-{{ payment.status }}">{{ payment.status|title }}</span></td><td>{{ payment.amount|money }}</td></tr>
+                        {% else %}<tr><td colspan="4" class="text-muted text-center py-4">No payments.</td></tr>{% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

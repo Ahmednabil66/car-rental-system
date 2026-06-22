@@ -1,0 +1,8 @@
+{% extends "admin/base.html" %}
+{% block title %}Feedback{% endblock %}
+{% block admin_content %}
+<h1 class="fw-bold mb-3">Customer Feedback</h1>
+<div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="table-light"><tr><th>Customer</th><th>Car</th><th>Rating</th><th>Comment</th><th>Visible</th><th></th></tr></thead><tbody>
+{% for f in feedbacks %}<tr><td>{{ f.customer.name }}</td><td>{{ f.car.title }}</td><td>{{ f.rating }}/5</td><td>{{ f.comments }}</td><td>{{ 'Yes' if f.is_visible else 'No' }}</td><td><form method="post" action="{{ url_for('admin.feedback_toggle', feedback_id=f.id) }}"><button class="btn btn-sm btn-outline-primary">Toggle</button></form></td></tr>{% else %}<tr><td colspan="6" class="text-center text-muted py-4">No feedback.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}
